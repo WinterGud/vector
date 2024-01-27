@@ -4,14 +4,8 @@ class vector
 public:
     vector();
     vector(int s);
+    vector(const vector<T>& right);
     ~vector();
-    class iterator;
-    T& operator[](int index);
-    void push_back(T& elem);
-    int capacity() { return m_capacity; }
-    T* begin() { return m_arr; }
-    vector<T>& operator=(const vector<T>& right);
-    int size() { return m_size; }
 
     class iterator
     {
@@ -20,22 +14,22 @@ public:
         {
         }
 
-        iterator& operator=(T* it);
+        iterator& operator=(const T& it);
         T& operator*() { return *m_ptr; }
 
-        vector<T>::iterator& operator++()
+        iterator& operator++()
         {
             ++m_ptr;
             return *this;
         }
 
-        vector<T>::iterator& operator--()
+        iterator& operator--()
         {
             --m_ptr;
             return *this;
         }
 
-        bool operator!=(const vector<T>::iterator& right)
+        bool operator!=(const iterator& right)
         {
             if (m_ptr == &*right)
             {
@@ -44,7 +38,7 @@ public:
             return true;;
         }
 
-        bool operator!=(T* right)
+        bool operator!=(const T& right)
         {
             if (m_ptr == right)
             {
@@ -53,7 +47,7 @@ public:
             return true;
         }
 
-        bool operator==(T* right)
+        bool operator==(const T& right)
         {
             if (m_ptr == right)
             {
@@ -61,6 +55,8 @@ public:
             }
             return false;;
         }
+
+        operator T*() const { return m_ptr; }
 
         friend std::ostream& operator<<(std::ostream& os, const iterator& it)
         {
@@ -72,17 +68,31 @@ public:
         T* m_ptr;
     };
 
+    const T& operator[](int index);
+    void push_back(const T& elem);
+    void erase(const iterator& it);
+    int capacity() { return m_capacity; }
+    iterator& begin();
+    iterator& end() { return m_arr + m_size; }
+    vector<T>& operator=(const vector& right);
+    bool operator==(const vector& right);
+    bool operator!=(const vector& right);
+    int size() { return m_size; }
+
 private:
     T* m_arr;
     int m_size;
     int m_capacity;
 
-
     void countCapacity()
     {
         while (m_capacity <= m_size)
+        {
             m_capacity <<= 1;
+        }
     }
+
+    void expandVector(int numToExpand);
 };
 
 template <typename T>
@@ -99,31 +109,60 @@ vector<T>::vector(int s) : m_size(s), m_capacity(4)
 }
 
 template <typename T>
+vector<T>::vector(const vector<T>& right)
+{
+    if (this == right)
+    {
+        return *this;
+    }
+    m_size = right.m_size;
+    m_capacity = right.m_capacity;
+    countCapacity();
+    m_arr = new T[m_capacity];
+    for (int i = 0; i < m_size; ++i)
+    {
+        m_arr[i] = right.m_arr[i];
+    }
+    return *this;
+}
+
+template <typename T>
 vector<T>::~vector()
 {
     delete[] m_arr;
 }
 
 template <typename T>
-T& vector<T>::operator[](int index)
+const T& vector<T>::operator[](int index)
 {
     return m_arr[index];
 }
 
 template <typename T>
-void vector<T>::push_back(T& elem)
+void vector<T>::push_back(const T& elem)
 {
-    if (m_size < m_capacity)
+    if (m_size == m_capacity)
     {
-        m_arr[m_size] = elem;
+        expandVector(1);
+        m_arr[m_size-1] = elem;
     }
     else
     {
-        countCapacity();
-        m_arr[m_size] = elem;
+        m_arr[m_size++] = elem;
     }
-    m_size++;
-    countCapacity();
+}
+
+template <typename T>
+void vector<T>::erase(const iterator& it)
+{
+    
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::begin()
+{
+    iterator it = m_arr;
+    return it;
 }
 
 template <typename T>
@@ -133,16 +172,58 @@ auto vector<T>::operator=(const vector<T>& right) -> vector<T>&
     {
         return *this;
     }
-    this->m_arr = new T[right.m_capacity];
+    m_arr = new T[right.m_capacity];
     for (size_t i = 0; i < right.m_size; i++)
     {
-        this->m_arr[i] = right.m_arr[i];
+        m_arr[i] = right.m_arr[i];
     }
     return *this;
 }
 
 template <typename T>
-typename vector<T>::iterator& vector<T>::iterator::operator=(T* it)
+bool vector<T>::operator==(const vector& right)
+{
+    if (m_size != right.m_size)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < m_size; ++i)
+    {
+        if (m_arr[i] != right.m_arr[i])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename T>
+bool vector<T>::operator!=(const vector& right)
+{
+    if (this == right)
+    {
+        return false;
+    }
+    return true;
+}
+
+template <typename T>
+void vector<T>::expandVector(int numToExpand)
+{
+    m_size += numToExpand;
+    countCapacity();
+    T* newVector = new T[m_capacity];
+    for (int i = 0; i < m_size - numToExpand; ++i)
+    {
+        newVector[i] = m_arr[i];
+    }
+    delete m_arr;
+    m_arr = newVector;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator=(const T& it)
 {
     m_ptr = it;
     return *this;
