@@ -5,13 +5,14 @@
 
 int main()
 {
-    vector<int> r;
+    vector<int> v1;
     for (int i = 0; i < 9; i++)
-        r.push_back(i);
-
-    for(int i = 0; i < 9; i++)
-        std::cout << r[i] << '\n';
+        v1.push_back(i);
     
-    std::cout << "все";
+    std::cout << v1.begin();
+    
+    for(int i = 0; i < 9; i++)
+        std::cout << v1[i] << '\n';
+    
     return 0;
 }

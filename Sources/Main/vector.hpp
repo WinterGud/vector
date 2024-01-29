@@ -1,3 +1,5 @@
+#pragma once
+
 template <typename T>
 class vector
 {
@@ -10,11 +12,13 @@ public:
     class iterator
     {
     public:
-        iterator(): m_ptr(nullptr)
+        iterator()
+            : m_ptr(nullptr)
         {
         }
 
         iterator& operator=(const T& it);
+        iterator& operator=(const iterator& it);
         T& operator*() { return *m_ptr; }
 
         iterator& operator++()
@@ -26,6 +30,18 @@ public:
         iterator& operator--()
         {
             --m_ptr;
+            return *this;
+        }
+
+        iterator& operator+(int n)
+        {
+            m_ptr += n;
+            return *this;
+        }
+
+        iterator& operator-(int n)
+        {
+            m_ptr -= n;
             return *this;
         }
 
@@ -144,7 +160,7 @@ void vector<T>::push_back(const T& elem)
     if (m_size == m_capacity)
     {
         expandVector(1);
-        m_arr[m_size-1] = elem;
+        m_arr[m_size - 1] = elem;
     }
     else
     {
@@ -155,14 +171,21 @@ void vector<T>::push_back(const T& elem)
 template <typename T>
 void vector<T>::erase(const iterator& it)
 {
-    
+    int count = 0;
+    while (it != begin())
+    {
+        count++;
+    }
+    for (int i = count; i > m_size - 1; ++i)
+    {
+        m_arr[i] = m_arr[i + 1];
+    }
 }
 
 template <typename T>
 typename vector<T>::iterator& vector<T>::begin()
 {
-    iterator it = m_arr;
-    return it;
+    return iterator(m_arr);
 }
 
 template <typename T>
@@ -226,5 +249,12 @@ template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator=(const T& it)
 {
     m_ptr = it;
+    return *this;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& it)
+{
+    m_ptr = it.m_ptr;
     return *this;
 }
