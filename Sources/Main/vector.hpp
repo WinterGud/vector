@@ -20,60 +20,15 @@ public:
         iterator& operator=(const T& it);
         iterator& operator=(const iterator& it);
         T& operator*() { return *m_ptr; }
-
-        iterator& operator++()
-        {
-            ++m_ptr;
-            return *this;
-        }
-
-        iterator& operator--()
-        {
-            --m_ptr;
-            return *this;
-        }
-
-        iterator& operator+(int n)
-        {
-            m_ptr += n;
-            return *this;
-        }
-
-        iterator& operator-(int n)
-        {
-            m_ptr -= n;
-            return *this;
-        }
-
-        bool operator!=(const iterator& right)
-        {
-            if (m_ptr == &*right)
-            {
-                return false;
-            }
-            return true;;
-        }
-
-        bool operator!=(const T& right)
-        {
-            if (m_ptr == right)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        bool operator==(const T& right)
-        {
-            if (m_ptr == right)
-            {
-                return true;
-            }
-            return false;;
-        }
-
+        iterator& operator++();
+        iterator& operator--();
+        iterator& operator+(int n);
+        iterator& operator-(int n);
+        bool operator!=(const iterator& right);
+        bool operator==(const iterator& right);
+        bool operator!=(const T& right);
+        bool operator==(const T& right);
         operator T*() const { return m_ptr; }
-
         friend std::ostream& operator<<(std::ostream& os, const iterator& it)
         {
             os << *it.m_ptr;
@@ -172,7 +127,7 @@ template <typename T>
 void vector<T>::erase(const iterator& it)
 {
     int count = 0;
-    while (it != begin())
+    while (begin()++ != it)
     {
         count++;
     }
@@ -189,7 +144,7 @@ typename vector<T>::iterator& vector<T>::begin()
 }
 
 template <typename T>
-auto vector<T>::operator=(const vector<T>& right) -> vector<T>&
+vector<T>& vector<T>::operator=(const vector<T>& right)
 {
     if (m_arr == right.m_arr)
     {
@@ -255,6 +210,78 @@ typename vector<T>::iterator& vector<T>::iterator::operator=(const T& it)
 template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& it)
 {
+    if(m_ptr == it.m_ptr)
+    {
+        return *this;
+    }
     m_ptr = it.m_ptr;
     return *this;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator++()
+{
+    ++m_ptr;
+    return *this;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator--()
+{
+    --m_ptr;
+    return *this;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator+(int n)
+{
+    m_ptr += n;
+    return *this;
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator-(int n)
+{
+    m_ptr -= n;
+    return *this;
+}
+
+template <typename T>
+bool vector<T>::iterator::operator!=(const iterator& right)
+{
+    if (m_ptr == right.m_ptr)
+    {
+        return false;
+    }
+    return true;
+}
+
+template <typename T>
+bool vector<T>::iterator::operator==(const iterator& right)
+{
+    if (m_ptr == right.m_ptr)
+    {
+        return true;
+    }
+    return false;
+}
+
+template <typename T>
+bool vector<T>::iterator::operator!=(const T& right)
+{
+    if (m_ptr == right)
+    {
+        return false;
+    }
+    return true;
+}
+
+template <typename T>
+bool vector<T>::iterator::operator==(const T& right)
+{
+    if (m_ptr == right)
+    {
+        return true;
+    }
+    return false;
 }
