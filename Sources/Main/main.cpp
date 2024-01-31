@@ -9,10 +9,10 @@ int main()
     for (int i = 0; i < 9; i++)
         v1.push_back(i);
     
-    std::cout << v1.begin();
+    std::cout << v1.begin() << '\n';
     
-    for(int i = 0; i < 9; i++)
-        std::cout << v1[i] << '\n';
+    // for(int i = 0; i < 9; i++)
+    //     std::cout << v1[i] << '\n';
     
     return 0;
 }

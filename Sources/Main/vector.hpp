@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+#include <iostream>
 
 template <typename T>
 class vector
@@ -6,16 +8,15 @@ class vector
 public:
     vector();
     vector(int s);
-    vector(const vector<T>& right);
+    vector(const vector& right);
     ~vector();
 
     class iterator
     {
     public:
-        iterator()
-            : m_ptr(nullptr)
-        {
-        }
+        iterator();
+        iterator(T* it);
+        ~iterator();
 
         iterator& operator=(const T& it);
         iterator& operator=(const iterator& it);
@@ -29,6 +30,7 @@ public:
         bool operator!=(const T& right);
         bool operator==(const T& right);
         operator T*() const { return m_ptr; }
+
         friend std::ostream& operator<<(std::ostream& os, const iterator& it)
         {
             os << *it.m_ptr;
@@ -43,12 +45,13 @@ public:
     void push_back(const T& elem);
     void erase(const iterator& it);
     int capacity() { return m_capacity; }
-    iterator& begin();
-    iterator& end() { return m_arr + m_size; }
+    iterator begin() const;
+    iterator end();
     vector<T>& operator=(const vector& right);
     bool operator==(const vector& right);
     bool operator!=(const vector& right);
     int size() { return m_size; }
+    friend void sort(iterator sortFrom, iterator sortTo);
 
 private:
     T* m_arr;
@@ -70,6 +73,7 @@ template <typename T>
 vector<T>::vector() : m_size(0), m_capacity(4)
 {
     m_arr = new T[m_capacity];
+    std::cout << "default constructor (vector)\n";
 }
 
 template <typename T>
@@ -77,6 +81,7 @@ vector<T>::vector(int s) : m_size(s), m_capacity(4)
 {
     countCapacity();
     m_arr = new T[m_capacity];
+    std::cout << "size constructor (vector)\n";
 }
 
 template <typename T>
@@ -94,6 +99,7 @@ vector<T>::vector(const vector<T>& right)
     {
         m_arr[i] = right.m_arr[i];
     }
+    std::cout << "copy constructor (vector)\n";
     return *this;
 }
 
@@ -101,6 +107,27 @@ template <typename T>
 vector<T>::~vector()
 {
     delete[] m_arr;
+    std::cout << "destructor (vector)\n";
+}
+
+template <typename T>
+vector<T>::iterator::iterator()
+    : m_ptr(nullptr)
+{
+    std::cout << "default constructor (iterator)\n";
+}
+
+template <typename T>
+vector<T>::iterator::iterator(T* it)
+{
+    m_ptr = it;
+    std::cout << "constructor with param (const T* it) (iterator)\n";
+}
+
+template <typename T>
+vector<T>::iterator::~iterator()
+{
+    std::cout << "destructor (iterator)\n";
 }
 
 template <typename T>
@@ -138,13 +165,19 @@ void vector<T>::erase(const iterator& it)
 }
 
 template <typename T>
-typename vector<T>::iterator& vector<T>::begin()
+typename vector<T>::iterator vector<T>::begin() const
 {
-    return iterator(m_arr);
+    return std::move(iterator(m_arr));
 }
 
 template <typename T>
-vector<T>& vector<T>::operator=(const vector<T>& right)
+typename vector<T>::iterator vector<T>::end()
+{
+    return std::move(iterator(m_arr + m_size));
+}
+
+template <typename T>
+vector<T>& vector<T>::operator=(const vector& right)
 {
     if (m_arr == right.m_arr)
     {
@@ -155,6 +188,7 @@ vector<T>& vector<T>::operator=(const vector<T>& right)
     {
         m_arr[i] = right.m_arr[i];
     }
+    std::cout << "operator =(const vector&) (vector)\n";
     return *this;
 }
 
@@ -204,17 +238,19 @@ template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator=(const T& it)
 {
     m_ptr = it;
+    std::cout << "operator =(const T&) (iterator)\n";
     return *this;
 }
 
 template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& it)
 {
-    if(m_ptr == it.m_ptr)
+    if (m_ptr == it.m_ptr)
     {
         return *this;
     }
     m_ptr = it.m_ptr;
+    std::cout << "operator =(const iterator&) (iterator)\n";
     return *this;
 }
 
