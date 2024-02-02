@@ -23,14 +23,14 @@ public:
         T& operator*() { return *m_ptr; }
         iterator& operator++();
         iterator& operator--();
+        iterator& operator++(int);
+        iterator& operator--(int);
         iterator& operator+(int n);
         iterator& operator-(int n);
-        bool operator!=(const iterator& right);
-        bool operator==(const iterator& right);
-        bool operator!=(const T& right);
-        bool operator==(const T& right);
         operator T*() const { return m_ptr; }
-
+        bool operator==(const iterator&) const;
+        bool operator!=(const iterator&) const;
+        T* getPointer();
         friend std::ostream& operator<<(std::ostream& os, const iterator& it)
         {
             os << *it.m_ptr;
@@ -44,14 +44,15 @@ public:
     const T& operator[](int index);
     void push_back(const T& elem);
     void erase(const iterator& it);
-    int capacity() { return m_capacity; }
+    int capacity() const { return m_capacity; }
     iterator begin() const;
     iterator end();
     vector<T>& operator=(const vector& right);
     bool operator==(const vector& right);
     bool operator!=(const vector& right);
-    int size() { return m_size; }
-    friend void sort(iterator sortFrom, iterator sortTo);
+    int size() const { return m_size; }
+    
+    friend void sort(iterator sortFrom, iterator sortTo){}
 
 private:
     T* m_arr;
@@ -221,6 +222,12 @@ bool vector<T>::operator!=(const vector& right)
 }
 
 template <typename T>
+T* vector<T>::iterator::getPointer()
+{
+    return m_ptr;
+}
+
+template <typename T>
 void vector<T>::expandVector(int numToExpand)
 {
     m_size += numToExpand;
@@ -269,6 +276,18 @@ typename vector<T>::iterator& vector<T>::iterator::operator--()
 }
 
 template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator++(int)
+{
+    return iterator(m_ptr++);
+}
+
+template <typename T>
+typename vector<T>::iterator& vector<T>::iterator::operator--(int)
+{
+    return iterator(m_ptr--);
+}
+
+template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator+(int n)
 {
     m_ptr += n;
@@ -283,41 +302,14 @@ typename vector<T>::iterator& vector<T>::iterator::operator-(int n)
 }
 
 template <typename T>
-bool vector<T>::iterator::operator!=(const iterator& right)
+bool vector<T>::iterator::operator==(const iterator& right) const
 {
-    if (m_ptr == right.m_ptr)
-    {
-        return false;
-    }
-    return true;
+    return m_ptr == right.m_ptr;
 }
 
 template <typename T>
-bool vector<T>::iterator::operator==(const iterator& right)
+bool vector<T>::iterator::operator!=(const iterator& right) const
 {
-    if (m_ptr == right.m_ptr)
-    {
-        return true;
-    }
-    return false;
+    return m_ptr != right.m_ptr;
 }
 
-template <typename T>
-bool vector<T>::iterator::operator!=(const T& right)
-{
-    if (m_ptr == right)
-    {
-        return false;
-    }
-    return true;
-}
-
-template <typename T>
-bool vector<T>::iterator::operator==(const T& right)
-{
-    if (m_ptr == right)
-    {
-        return true;
-    }
-    return false;
-}
