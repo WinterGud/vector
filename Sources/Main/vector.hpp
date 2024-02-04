@@ -186,7 +186,9 @@ vector<T>& vector<T>::operator=(const vector& right)
         return *this;
     }
     m_arr = new T[right.m_capacity];
-    for (size_t i = 0; i < right.m_size; i++)
+    m_size = right.m_size;
+    m_capacity = right.m_capacity;
+    for (int i = 0; i < right.m_size; i++)
     {
         m_arr[i] = right.m_arr[i];
     }

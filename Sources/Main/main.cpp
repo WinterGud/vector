@@ -21,15 +21,12 @@ int main()
     vv1.push_back(v1);
     vv1.push_back(v1);
 
-    for(int i = 0; i < vv1[0].size(); i++)
-        std::cout << vv1[0][i] << ' ';
-    
 
     for(auto it : vv1)
     {
         for(const auto it2 : it)
         {
-            std::cout << it2;
+            std::cout << it2 << ' ';
         }
     }
     
