@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-
 #include "vector.hpp"
 
 
@@ -17,12 +16,22 @@ int main()
     v1.push_back(1234);
     v1.push_back(532);
 
-    std::sort(v1.begin().getPointer(), v1.end().getPointer());
+    vector<vector<int>> vv1;
+    vv1.push_back(v1);
+    vv1.push_back(v1);
+    vv1.push_back(v1);
 
-    std::cout << "\n" <<std::find(v1.begin().getPointer(), v1.end().getPointer(), 123) << '\n';
+    for(int i = 0; i < vv1[0].size(); i++)
+        std::cout << vv1[0][i] << ' ';
     
-    for(vector<int>::iterator it = v1.begin(); it != v1.end(); ++it)
-        std::cout << it << '\n';
+
+    for(auto it : vv1)
+    {
+        for(const auto it2 : it)
+        {
+            std::cout << it2;
+        }
+    }
     
     return 0;
 }

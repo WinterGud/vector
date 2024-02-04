@@ -41,7 +41,7 @@ public:
         T* m_ptr;
     };
 
-    const T& operator[](int index);
+    const T& operator[](int index) const;
     void push_back(const T& elem);
     void erase(const iterator& it);
     int capacity() const { return m_capacity; }
@@ -51,6 +51,7 @@ public:
     bool operator==(const vector& right);
     bool operator!=(const vector& right);
     int size() const { return m_size; }
+    const T& at(int index) const;
     
     friend void sort(iterator sortFrom, iterator sortTo){}
 
@@ -88,10 +89,6 @@ vector<T>::vector(int s) : m_size(s), m_capacity(4)
 template <typename T>
 vector<T>::vector(const vector<T>& right)
 {
-    if (this == right)
-    {
-        return *this;
-    }
     m_size = right.m_size;
     m_capacity = right.m_capacity;
     countCapacity();
@@ -101,7 +98,6 @@ vector<T>::vector(const vector<T>& right)
         m_arr[i] = right.m_arr[i];
     }
     std::cout << "copy constructor (vector)\n";
-    return *this;
 }
 
 template <typename T>
@@ -115,24 +111,24 @@ template <typename T>
 vector<T>::iterator::iterator()
     : m_ptr(nullptr)
 {
-    std::cout << "default constructor (iterator)\n";
+    //std::cout << "default constructor (iterator)\n";
 }
 
 template <typename T>
 vector<T>::iterator::iterator(T* it)
 {
     m_ptr = it;
-    std::cout << "constructor with param (const T* it) (iterator)\n";
+    //std::cout << "constructor with param (const T* it) (iterator)\n";
 }
 
 template <typename T>
 vector<T>::iterator::~iterator()
 {
-    std::cout << "destructor (iterator)\n";
+    //std::cout << "destructor (iterator)\n";
 }
 
 template <typename T>
-const T& vector<T>::operator[](int index)
+const T& vector<T>::operator[](int index) const
 {
     return m_arr[index];
 }
@@ -155,11 +151,16 @@ template <typename T>
 void vector<T>::erase(const iterator& it)
 {
     int count = 0;
-    while (begin()++ != it)
+    iterator iteratorToBegin = this->begin();
+    while (iteratorToBegin++ != it)
     {
+        if(count == m_size)
+        {
+            throw "count >=size";
+        }
         count++;
     }
-    for (int i = count; i > m_size - 1; ++i)
+    for (int i = count; i < m_size - 1; i++)
     {
         m_arr[i] = m_arr[i + 1];
     }
@@ -222,6 +223,16 @@ bool vector<T>::operator!=(const vector& right)
 }
 
 template <typename T>
+const T& vector<T>::at(int index) const
+{
+    if(index < 0 || index >= m_size)
+    {
+        throw "error";
+    }
+    return m_arr[index];
+}
+
+template <typename T>
 T* vector<T>::iterator::getPointer()
 {
     return m_ptr;
@@ -278,13 +289,17 @@ typename vector<T>::iterator& vector<T>::iterator::operator--()
 template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator++(int)
 {
-    return iterator(m_ptr++);
+    iterator temp = *this;
+    ++m_ptr;
+    return std::move(temp);
 }
 
 template <typename T>
 typename vector<T>::iterator& vector<T>::iterator::operator--(int)
 {
-    return iterator(m_ptr--);
+    iterator temp = *this;
+    --m_ptr;
+    return std::move(temp);
 }
 
 template <typename T>
