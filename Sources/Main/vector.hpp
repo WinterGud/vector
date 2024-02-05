@@ -23,8 +23,8 @@ public:
         T& operator*() { return *m_ptr; }
         iterator& operator++();
         iterator& operator--();
-        iterator& operator++(int);
-        iterator& operator--(int);
+        iterator operator++(int);
+        iterator operator--(int);
         iterator& operator+(int n);
         iterator& operator-(int n);
         operator T*() const { return m_ptr; }
@@ -40,10 +40,13 @@ public:
     private:
         T* m_ptr;
     };
-
-    const T& operator[](int index) const;
+    
+    T& operator[](int index);
     void push_back(const T& elem);
     void erase(const iterator& it);
+    void pop_back();//
+    void clear();
+    bool empty();
     int capacity() const { return m_capacity; }
     iterator begin() const;
     iterator end();
@@ -64,7 +67,7 @@ private:
     {
         while (m_capacity <= m_size)
         {
-            m_capacity <<= 1;
+            m_capacity += 1;
         }
     }
 
@@ -128,7 +131,7 @@ vector<T>::iterator::~iterator()
 }
 
 template <typename T>
-const T& vector<T>::operator[](int index) const
+T& vector<T>::operator[](int index)
 {
     return m_arr[index];
 }
@@ -150,6 +153,10 @@ void vector<T>::push_back(const T& elem)
 template <typename T>
 void vector<T>::erase(const iterator& it)
 {
+    if(m_size == 0)
+    {
+        throw "error";
+    }
     int count = 0;
     iterator iteratorToBegin = this->begin();
     while (iteratorToBegin++ != it)
@@ -164,6 +171,32 @@ void vector<T>::erase(const iterator& it)
     {
         m_arr[i] = m_arr[i + 1];
     }
+    --m_size;
+}
+
+template <typename T>
+void vector<T>::pop_back()
+{
+    if(m_size <= 0)
+    {
+        throw "error";
+    }
+    m_size--;
+}
+
+template <typename T>
+void vector<T>::clear()
+{
+    m_capacity = 4;
+    m_size = 0;
+    delete m_arr;
+    m_arr = new T[m_capacity];
+}
+
+template <typename T>
+bool vector<T>::empty()
+{
+    return m_size > 0;
 }
 
 template <typename T>
@@ -289,15 +322,15 @@ typename vector<T>::iterator& vector<T>::iterator::operator--()
 }
 
 template <typename T>
-typename vector<T>::iterator& vector<T>::iterator::operator++(int)
+typename vector<T>::iterator vector<T>::iterator::operator++(int)
 {
     iterator temp = *this;
     ++m_ptr;
-    return std::move(temp);
+    return (temp);
 }
 
 template <typename T>
-typename vector<T>::iterator& vector<T>::iterator::operator--(int)
+typename vector<T>::iterator vector<T>::iterator::operator--(int)
 {
     iterator temp = *this;
     --m_ptr;
