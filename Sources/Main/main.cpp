@@ -56,7 +56,7 @@ int main() {
     }
 
     // Test Case 12
-    std::vector<int> capacityVector;
+    vector<int> capacityVector;
     std::cout << "Test Case 12: Initial capacity of capacityVector: " << capacityVector.capacity() << std::endl;
 
     // Test Case 13
@@ -72,16 +72,16 @@ int main() {
     // Test Case 15
     try {
         int value = capacityVector.at(0); // This will throw an out_of_range exception
-    } catch (const std::out_of_range &e) {
-        std::cerr << "Test Case 15: " << e.what() << std::endl;
+    } catch (const char* er) {
+        std::cerr << "Test Case 15: " << er << std::endl;
     }
 
 
     // Test Case 18
     try {
         int value = capacityVector.at(0); // This will throw an out_of_range exception
-    } catch (const std::out_of_range &e) {
-        std::cerr << "Test Case 18: " << e.what() << std::endl;
+    } catch (const char* er) {
+        std::cerr << "Test Case 18: " << er << std::endl;
     }
 
     return 0;

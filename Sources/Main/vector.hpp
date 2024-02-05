@@ -114,20 +114,20 @@ template <typename T>
 vector<T>::iterator::iterator()
     : m_ptr(nullptr)
 {
-    //std::cout << "default constructor (iterator)\n";
+    std::cout << "default constructor (iterator)\n";
 }
 
 template <typename T>
 vector<T>::iterator::iterator(T* it)
 {
     m_ptr = it;
-    //std::cout << "constructor with param (const T* it) (iterator)\n";
+    std::cout << "constructor with param (const T* it) (iterator)\n";
 }
 
 template <typename T>
 vector<T>::iterator::~iterator()
 {
-    //std::cout << "destructor (iterator)\n";
+    std::cout << "destructor (iterator)\n";
 }
 
 template <typename T>
