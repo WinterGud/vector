@@ -2,6 +2,10 @@
 #include <utility>
 #include <iostream>
 
+namespace{
+    const float EXPEND_COEF = 1.5;
+}
+
 template <typename T>
 class vector
 {
@@ -71,18 +75,20 @@ private:
         }
     }
 
-    void expandVector(int numToExpand);
+    void expandVector();
 };
 
 template <typename T>
-vector<T>::vector() : m_size(0), m_capacity(4)
+vector<T>::vector()
+    : m_size(0), m_capacity(4)
 {
     m_arr = new T[m_capacity];
     std::cout << "default constructor (vector)\n";
 }
 
 template <typename T>
-vector<T>::vector(int s) : m_size(s), m_capacity(4)
+vector<T>::vector(int s)
+    : m_size(s), m_capacity(4)
 {
     countCapacity();
     m_arr = new T[m_capacity];
@@ -141,7 +147,7 @@ void vector<T>::push_back(const T& elem)
 {
     if (m_size == m_capacity)
     {
-        expandVector(1);
+        expandVector();
         m_arr[m_size - 1] = elem;
     }
     else
@@ -274,12 +280,11 @@ T* vector<T>::iterator::getPointer()
 }
 
 template <typename T>
-void vector<T>::expandVector(int numToExpand)
+void vector<T>::expandVector()
 {
-    m_size += numToExpand;
-    countCapacity();
+    m_capacity *= EXPEND_COEF;
     T* newVector = new T[m_capacity];
-    for (int i = 0; i < m_size - numToExpand; ++i)
+    for (int i = 0; i < m_size; i++)
     {
         newVector[i] = m_arr[i];
     }

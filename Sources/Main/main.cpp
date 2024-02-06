@@ -5,7 +5,9 @@
 
 int main() {
     // Test Case 1
-    vector<int> intVector;
+    std::vector<int> intVector;
+    intVector.push_back(4);
+    
     std::cout << "Test Case 1: Size of intVector: " << intVector.size() << std::endl;
 
     // Test Case 2
